@@ -15,4 +15,5 @@ return [
     Symfony\Bundle\MakerBundle\MakerBundle::class => ['dev' => true],
     Symfony\UX\TwigComponent\TwigComponentBundle::class => ['all' => true],
     Symfony\UX\Toolkit\UXToolkitBundle::class => ['dev' => true, 'test' => true],
+    Symfonycasts\TailwindBundle\SymfonycastsTailwindBundle::class => ['all' => true],
 ];
