@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Vérification sécurisée{% endblock %}
+
+{% block body %}
+    <div class="flex min-h-screen items-center justify-center bg-slate-50/50 p-6">
+
+        <twig:Card class="w-full max-w-[400px] border-slate-200 shadow-sm">
+
+            <twig:Card:Header class="flex flex-col gap-2 pt-8">
+                <twig:Card:Title class="text-2xl font-semibold tracking-tight">
+                    Vérification sécurisée
+                </twig:Card:Title>
+                <twig:Card:Description class="text-sm leading-relaxed">
+                    Un code de sécurité a été envoyé à votre adresse email pour confirmer votre identité.
+                </twig:Card:Description>
+            </twig:Card:Header>
+
+            <twig:Card:Content class="pt-6 pb-8">
+                {% if authenticationError %}
+                    <twig:Alert variant="destructive" class="max-w-lg">
+                        <twig:ux:icon name="tabler:alert-circle" class="h-4 w-4" />
+                        <twig:Alert:Title>Error</twig:Alert:Title>
+                        <twig:Alert:Description>
+                            <p>{{ authenticationError|trans(authenticationErrorData, 'SchebTwoFactorBundle') }}</p>
+                        </twig:Alert:Description>
+                    </twig:Alert>
+                {% endif %}
+
+                <form action="{{ path('2fa_login_check') }}" method="post" class="flex flex-col gap-8">
+
+                    {# Section Input avec flex-col pour l'alignement #}
+                    <div class="flex flex-col gap-3">
+                        <twig:Label for="_auth_code" class="text-sm font-medium">
+                            Code de confirmation
+                        </twig:Label>
+                        <twig:Input
+                            id="_auth_code"
+                            name="_auth_code"
+                            type="text"
+                            placeholder="Entrez votre code"
+                            required
+                            autofocus
+                            class="h-11"
+                            autocomplete="one-time-code"
+                        />
+                    </div>
+
+                    <div class="flex flex-col gap-3">
+                        <twig:Button type="submit" class="w-full h-10">
+                            Valider la connexion
+                        </twig:Button>
+
+                        <twig:Button as="a" href="{{ path('app_logout') }}" variant="ghost" class="w-full h-10 text-slate-500 hover:text-slate-900">
+                            Annuler et revenir
+                        </twig:Button>
+                    </div>
+                </form>
+            </twig:Card:Content>
+
+            <twig:Card:Footer class="flex justify-center border-t py-4 bg-slate-50/30 rounded-b-lg">
+                <p class="text-[12px] text-muted-foreground">
+                    Le code est valide pendant <span class="font-medium text-slate-900">15 minutes</span>.
+                </p>
+            </twig:Card:Footer>
+
+        </twig:Card>
+    </div>
+{% endblock %}

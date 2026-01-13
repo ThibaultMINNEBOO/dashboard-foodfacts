@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container relative flex pt-32 flex-col items-center justify-center">
+        <twig:Card class="w-full max-w-[400px]">
+            <twig:Card:Header>
+                <twig:Card:Title class="text-2xl">Connexion</twig:Card:Title>
+                <twig:Card:Description>
+                    Accès au Dashboard Open Food Facts.
+                </twig:Card:Description>
+            </twig:Card:Header>
+
+            <twig:Card:Content>
+                <form method="post">
+                    {% if error %}
+                        <div class="mb-4 p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md">
+                            {{ error.messageKey|trans(error.messageData, 'security') }}
+                        </div>
+                    {% endif %}
+
+                    <div class="grid gap-4">
+                        <div class="grid gap-2">
+                            <twig:Label for="username">Email</twig:Label>
+                            <twig:Input name="_username" id="username" type="email" value="{{ last_username }}" required autofocus />
+                        </div>
+                        <div class="grid gap-2">
+                            <twig:Label for="password">Mot de passe</twig:Label>
+                            <twig:Input name="_password" id="password" type="password" required />
+                        </div>
+
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                        <twig:Button type="submit" class="w-full">
+                            Se connecter
+                        </twig:Button>
+                    </div>
+                </form>
+            </twig:Card:Content>
+        </twig:Card>
+    </div>
+{% endblock %}
+
+{% block title %}
+
+{% endblock %}
+

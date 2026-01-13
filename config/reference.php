@@ -957,7 +957,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         enabled?: bool|Param, // Default: false
  *     },
  *     html?: bool|array{
- *         enabled?: bool|Param, // Default: false
+ *         enabled?: bool|Param, // Default: true
  *     },
  *     markdown?: bool|array{
  *         enabled?: bool|Param, // Default: false
@@ -1291,6 +1291,28 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *             always_remember_me?: bool|Param, // Default: false
  *             remember_me_parameter?: scalar|null|Param, // Default: "_remember_me"
  *         },
+ *         two_factor?: array{
+ *             check_path?: scalar|null|Param, // Default: "/2fa_check"
+ *             post_only?: bool|Param, // Default: true
+ *             auth_form_path?: scalar|null|Param, // Default: "/2fa"
+ *             always_use_default_target_path?: bool|Param, // Default: false
+ *             default_target_path?: scalar|null|Param, // Default: "/"
+ *             success_handler?: scalar|null|Param, // Default: null
+ *             failure_handler?: scalar|null|Param, // Default: null
+ *             authentication_required_handler?: scalar|null|Param, // Default: null
+ *             auth_code_parameter_name?: scalar|null|Param, // Default: "_auth_code"
+ *             trusted_parameter_name?: scalar|null|Param, // Default: "_trusted"
+ *             remember_me_sets_trusted?: scalar|null|Param, // Default: false
+ *             multi_factor?: bool|Param, // Default: false
+ *             prepare_on_login?: bool|Param, // Default: false
+ *             prepare_on_access_denied?: bool|Param, // Default: false
+ *             enable_csrf?: scalar|null|Param, // Default: false
+ *             csrf_parameter?: scalar|null|Param, // Default: "_csrf_token"
+ *             csrf_token_id?: scalar|null|Param, // Default: "two_factor"
+ *             csrf_header?: scalar|null|Param, // Default: null
+ *             csrf_token_manager?: scalar|null|Param, // Default: "scheb_two_factor.csrf_token_manager"
+ *             provider?: scalar|null|Param, // Default: null
+ *         },
  *     }>,
  *     access_control?: list<array{ // Default: []
  *         request_matcher?: scalar|null|Param, // Default: null
@@ -1477,6 +1499,50 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     postcss_config_file?: scalar|null|Param, // Path to PostCSS config file which is passed to the Tailwind CLI // Default: null
  *     strict_mode?: bool|null|Param, // When enabled, an exception will be thrown if there are no built assets (default: false in `test` env, true otherwise) // Default: null
  * }
+ * @psalm-type SchebTwoFactorConfig = array{
+ *     persister?: scalar|null|Param, // Default: "scheb_two_factor.persister.doctrine"
+ *     model_manager_name?: scalar|null|Param, // Default: null
+ *     security_tokens?: list<scalar|null|Param>,
+ *     ip_whitelist?: list<scalar|null|Param>,
+ *     ip_whitelist_provider?: scalar|null|Param, // Default: "scheb_two_factor.default_ip_whitelist_provider"
+ *     two_factor_token_factory?: scalar|null|Param, // Default: "scheb_two_factor.default_token_factory"
+ *     two_factor_provider_decider?: scalar|null|Param, // Default: "scheb_two_factor.default_provider_decider"
+ *     two_factor_condition?: scalar|null|Param, // Default: null
+ *     code_reuse_cache?: scalar|null|Param, // Default: null
+ *     code_reuse_cache_duration?: int|Param, // Default: 60
+ *     code_reuse_default_handler?: scalar|null|Param, // Default: null
+ *     email?: bool|array{
+ *         enabled?: scalar|null|Param, // Default: false
+ *         mailer?: scalar|null|Param, // Default: null
+ *         code_generator?: scalar|null|Param, // Default: "scheb_two_factor.security.email.default_code_generator"
+ *         form_renderer?: scalar|null|Param, // Default: null
+ *         sender_email?: scalar|null|Param, // Default: null
+ *         sender_name?: scalar|null|Param, // Default: null
+ *         template?: scalar|null|Param, // Default: "@SchebTwoFactor/Authentication/form.html.twig"
+ *         digits?: int|Param, // Default: 4
+ *     },
+ * }
+ * @psalm-type TalesFromADevTwigExtraTailwindConfig = array{
+ *     tailwind_merge?: array{
+ *         additional_configuration?: mixed, // Default: []
+ *     },
+ * }
+ * @psalm-type UxIconsConfig = array{
+ *     icon_dir?: scalar|null|Param, // The local directory where icons are stored. // Default: "%kernel.project_dir%/assets/icons"
+ *     default_icon_attributes?: array<string, scalar|null|Param>,
+ *     icon_sets?: array<string, array{ // the icon set prefix (e.g. "acme") // Default: []
+ *         path?: scalar|null|Param, // The local icon set directory path. (cannot be used with 'alias')
+ *         alias?: scalar|null|Param, // The remote icon set identifier. (cannot be used with 'path')
+ *         icon_attributes?: array<string, scalar|null|Param>,
+ *     }>,
+ *     aliases?: array<string, string|Param>,
+ *     iconify?: bool|array{ // Configuration for the remote icon service.
+ *         enabled?: bool|Param, // Default: true
+ *         on_demand?: bool|Param, // Whether to download icons "on demand". // Default: true
+ *         endpoint?: scalar|null|Param, // The endpoint for the Iconify icons API. // Default: "https://api.iconify.design"
+ *     },
+ *     ignore_not_found?: bool|Param, // Ignore error when an icon is not found. Set to 'true' to fail silently. // Default: false
+ * }
  * @psalm-type ConfigType = array{
  *     imports?: ImportsConfig,
  *     parameters?: ParametersConfig,
@@ -1492,6 +1558,9 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     monolog?: MonologConfig,
  *     twig_component?: TwigComponentConfig,
  *     symfonycasts_tailwind?: SymfonycastsTailwindConfig,
+ *     scheb_two_factor?: SchebTwoFactorConfig,
+ *     tales_from_a_dev_twig_extra_tailwind?: TalesFromADevTwigExtraTailwindConfig,
+ *     ux_icons?: UxIconsConfig,
  *     "when@dev"?: array{
  *         imports?: ImportsConfig,
  *         parameters?: ParametersConfig,
@@ -1511,6 +1580,9 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         twig_component?: TwigComponentConfig,
  *         ux_toolkit?: UxToolkitConfig,
  *         symfonycasts_tailwind?: SymfonycastsTailwindConfig,
+ *         scheb_two_factor?: SchebTwoFactorConfig,
+ *         tales_from_a_dev_twig_extra_tailwind?: TalesFromADevTwigExtraTailwindConfig,
+ *         ux_icons?: UxIconsConfig,
  *     },
  *     "when@prod"?: array{
  *         imports?: ImportsConfig,
@@ -1527,6 +1599,9 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         monolog?: MonologConfig,
  *         twig_component?: TwigComponentConfig,
  *         symfonycasts_tailwind?: SymfonycastsTailwindConfig,
+ *         scheb_two_factor?: SchebTwoFactorConfig,
+ *         tales_from_a_dev_twig_extra_tailwind?: TalesFromADevTwigExtraTailwindConfig,
+ *         ux_icons?: UxIconsConfig,
  *     },
  *     "when@test"?: array{
  *         imports?: ImportsConfig,
@@ -1545,6 +1620,9 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         twig_component?: TwigComponentConfig,
  *         ux_toolkit?: UxToolkitConfig,
  *         symfonycasts_tailwind?: SymfonycastsTailwindConfig,
+ *         scheb_two_factor?: SchebTwoFactorConfig,
+ *         tales_from_a_dev_twig_extra_tailwind?: TalesFromADevTwigExtraTailwindConfig,
+ *         ux_icons?: UxIconsConfig,
  *     },
  *     ...<string, ExtensionType|array{ // extra keys must follow the when@%env% pattern or match an extension alias
  *         imports?: ImportsConfig,
