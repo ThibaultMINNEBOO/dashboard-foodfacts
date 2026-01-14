@@ -30,7 +30,7 @@ export default class extends Controller {
 
       if (!res.ok) {
           this.element.innerHTML = `
-            <div class="flex h-36 items-center justify-center rounded-md border bg-red-50 text-sm text-red-700 p-2">{data}</div>
+            <div class="flex h-36 items-center justify-center rounded-md border bg-red-50 text-sm text-red-700 p-2">${data}</div>
           `
         return
       }
