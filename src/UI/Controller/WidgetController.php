@@ -69,19 +69,25 @@ final class WidgetController extends AbstractController
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function resolve(ResolveWidgetData $resolveWidgetData, #[MapEntity] Widget $widget): Response
     {
-        $dashboard = $widget->getDashboard();
-        $dashboardUser = $dashboard->getAuthor();
+        try {
+            $dashboard = $widget->getDashboard();
+            $dashboardUser = $dashboard->getAuthor();
 
-        $currentUser = $this->getUser();
-        if (!$currentUser instanceof User || $currentUser->getId() !== $dashboardUser->getId()) {
-            throw $this->createAccessDeniedException('You do not have permission to delete this widget.');
+            $currentUser = $this->getUser();
+            if (!$currentUser instanceof User || $currentUser->getId() !== $dashboardUser->getId()) {
+                throw $this->createAccessDeniedException('You do not have permission to delete this widget.');
+            }
+
+            $widgetData = $resolveWidgetData->execute($widget);
+
+            return $this->json([
+                'data' => $widgetData->getResult(),
+            ], $widgetData->isSuccess() ? 200 : 400);
+        } catch (\Exception $e) {
+            return $this->json([
+                'data' => 'An error occurred while resolving widget data.',
+            ], 500);
         }
-
-        $widgetData = $resolveWidgetData->execute($widget);
-
-        return $this->json([
-            'data' => $widgetData->getResult(),
-        ], $widgetData->isSuccess() ? 200 : 500);
     }
 
     #[Route('/widget/{id}/delete', name: 'app_widget_delete', methods: ['POST'])]
