@@ -7,7 +7,7 @@ WORKDIR /app
 
 COPY ../composer.json composer.lock ./
 
-RUN composer install --no-dev --no-scripts --no-progress --optimize-autoloader
+RUN composer install --no-scripts --no-progress --optimize-autoloader
 
 COPY .. /app
 

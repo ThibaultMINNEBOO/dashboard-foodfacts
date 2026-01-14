@@ -8,6 +8,8 @@ echo "date.timezone = '$TZ'" > "$PHP_INI_DIR/php.ini"
 # Clear cache and update database
 php bin/console c:c
 php bin/console d:m:m --no-interaction
+php bin/console tailwind:build
+php bin/console importmap:install
 
 # Start frankenphp
 frankenphp run --config /app/docker/Caddyfile &

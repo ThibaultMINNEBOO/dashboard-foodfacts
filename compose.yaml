@@ -9,6 +9,7 @@ services:
       - MAILER_DSN=smtp://mailhog:1025
     volumes:
       - $PWD/:/app
+      - /app/vendor
     tty: true # Dev only
     depends_on:
       - database
