@@ -4,6 +4,7 @@ namespace App\Domain\Entity;
 
 use App\Domain\Enums\Role;
 use App\Domain\Exception\UserBlockedException;
+use App\Domain\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Scheb\TwoFactorBundle\Model\Email\TwoFactorInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -11,6 +12,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity]
 #[ORM\Table(name: '`user`')]
+#[ORM\HasLifecycleCallbacks]
 class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFactorInterface
 {
     private const MAX_LOGIN_ATTEMPTS = 5;
@@ -41,6 +43,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\Column(type: 'string', length: 6, nullable: true)]
     private ?string $twoFactorCode = null;
 
+    #[ORM\OneToOne(targetEntity: Dashboard::class, inversedBy: 'author', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Dashboard $dashboard = null;
+
     public static function create(string $email, string $hashedPassword): self
     {
         $email = strtolower(trim($email));
@@ -55,6 +61,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         $user->password = $hashedPassword;
 
         return $user;
+    }
+
+    #[ORM\PrePersist]
+    public function setDashboard(): void
+    {
+        $dashboard = new Dashboard();
+        $dashboard->setAuthor($this);
+        $this->dashboard = $dashboard;
     }
 
     public function recordFailedLoginAttempts(): void
@@ -106,6 +120,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     public function getPassword(): ?string
     {
         return $this->password;
+    }
+
+    public function getDashboard(): ?Dashboard
+    {
+        return $this->dashboard;
     }
 
     public function getRoles(): array

@@ -32,10 +32,10 @@
                     <p class="text-sm text-muted-foreground">Ajoute, configure et réorganise tes widgets.</p>
                 </div>
 
-                <twig:Button size="sm">
+                <a href="{{ path('app_widget_create') }}" class="inline-flex items-center gap-2 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground hover:opacity-95">
                     <twig:ux:icon name="lucide:plus" class="size-4" />
                     Ajouter un widget
-                </twig:Button>
+                </a>
             </div>
 
             {% if widgets is empty %}
@@ -52,38 +52,35 @@
                             </p>
 
                             <div class="mt-8 flex flex-col sm:flex-row items-stretch justify-center gap-3">
-                                <twig:Button size="lg" class="w-full sm:w-auto px-8">
+                                <a href="{{ path('app_widget_create') }}" class="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-sm font-medium text-primary-foreground hover:opacity-95 w-full sm:w-auto">
                                     <twig:ux:icon name="lucide:plus" class="size-4" />
                                     Ajouter un widget
-                                </twig:Button>
-                                <twig:Button size="lg" variant="outline" class="w-full sm:w-auto px-8">
-                                    <twig:ux:icon name="lucide:sparkles" class="size-4" />
-                                    Setup recommandé
-                                </twig:Button>
+                                </a>
                             </div>
                         </div>
                     </twig:Card>
                 </div>
             {% else %}
-                <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" data-controller="dashboard-sortable">
+                <meta name="csrf-token" content="{{ csrf_token('reorder-widgets') }}">
+                <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" data-controller="dashboard-sortable" data-dashboard-sortable-url-value="{{ path('app_widget_reorder') }}">
                     {% for widget in widgets %}
-                        <div class="group" data-id="{{ widget.id }}">
-                            <twig:Card class="h-full">
+                        <div class="group relative cursor-grab active:cursor-grabbing" data-id="{{ widget.id }}">
+                            <twig:Card class="h-full transition-all duration-200 ease-in-out transform-gpu will-change-transform group-hover:-translate-y-1 group-hover:shadow-lg">
                                 <div class="flex items-center justify-between border-b px-4 py-3">
                                     <div class="min-w-0">
                                         <div class="truncate text-sm font-semibold">
-                                            {{ widget.type.label ?? 'Widget' }}
+                                            {{ widget.title ?? 'Widget' }}
                                         </div>
-                                        <div class="truncate text-xs text-muted-foreground">Configuration personnalisée</div>
                                     </div>
-                                    <twig:Button variant="ghost" size="icon" class="handle cursor-grab active:cursor-grabbing">
-                                        <twig:ux:icon name="lucide:grip-vertical" class="size-4" />
-                                    </twig:Button>
+                                    <form method="post" action="{{ path('app_widget_delete', {id: widget.id}) }}">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete-widget-' ~ widget.id) }}">
+                                        <twig:Button variant="ghost" size="sm">
+                                            <twig:ux:icon name="lucide:trash-2" class="size-4" />
+                                        </twig:Button>
+                                    </form>
                                 </div>
                                 <div class="p-4">
-                                    <div class="flex h-36 items-center justify-center rounded-md border border-dashed bg-muted/20 text-sm text-muted-foreground">
-                                        Contenu du widget
-                                    </div>
+                                    <div data-controller="widget-loader" data-widget-loader-url-value="{{ path('app_widget_resolve', {id: widget.id}) }}" class="widget-content"></div>
                                 </div>
                             </twig:Card>
                         </div>
@@ -92,4 +89,5 @@
             {% endif %}
         </main>
     </div>
+
 {% endblock %}

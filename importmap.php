@@ -25,4 +25,10 @@ return [
     '@hotwired/turbo' => [
         'version' => '7.3.0',
     ],
+    'sortable' => [
+        'version' => '2.0.0',
+    ],
+    'jquery-browserify' => [
+        'version' => '1.8.1',
+    ],
 ];

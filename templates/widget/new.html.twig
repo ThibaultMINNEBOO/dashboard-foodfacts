@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer un widget{% endblock %}
+
+{% block body %}
+<div class="min-h-screen bg-muted/10 flex items-start justify-center py-12">
+    <div class="w-full max-w-3xl px-4">
+        <twig:Card>
+            <div class="p-6 sm:p-8">
+                <div class="mb-6">
+                    <h1 class="text-2xl font-semibold">Créer un nouveau widget</h1>
+                    <p class="mt-1 text-sm text-muted-foreground">Remplis les informations ci-dessous pour créer ton widget.</p>
+                </div>
+
+                {# Le formulaire visuel — vous brancherez l'action et la méthode plus tard #}
+                <form action="{{ path('app_widget_store') }}" method="post" class="space-y-6" data-controller="app--widget_form">
+                    <div>
+                        <label for="title" class="block text-sm font-medium text-foreground">Titre</label>
+                        <input type="text" name="title" required class="mt-1 block w-full rounded-md border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Titre du widget" />
+                    </div>
+
+                    <div class="flex gap-4">
+                        <div class="flex-1">
+                            <label class="block text-sm font-medium text-foreground">Type de widget</label>
+                            <select name="type" required data-app--widget_form-target="type" data-action="change->app--widget_form#change" class="mt-1 block w-full rounded-md border bg-background px-3 py-2 text-sm">
+                                <option value="product_count">Nombre de produits</option>
+                                <option value="product_count_by_countries">Nombre de produits par pays</option>
+                                <option value="product_count_by_nutriscore">Nombre de produit par nutriscore</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div data-app--widget_form-target="countryField" class="mt-4 hidden">
+                        <label class="block text-sm font-medium text-foreground">Pays</label>
+                        <select name="country" class="mt-1 block w-full rounded-md border bg-background px-3 py-2 text-sm">
+                            <option value="france">France</option>
+                            <option value="germany">Allemagne</option>
+                            <option value="united-kingdom">Royaume-Uni</option>
+                            <option value="united-states">États-Unis</option>
+                            <option value="italy">Italie</option>
+                        </select>
+                        <p class="mt-2 text-xs text-muted-foreground">Sélectionne un seul pays pour restreindre les données.</p>
+                    </div>
+                    <div data-app--widget_form-target="nutriscoreField" class="mt-4 hidden">
+                        <label class="block text-sm font-medium text-foreground">Nutriscore</label>
+                        <select name="nutriscore" class="mt-1 block w-full rounded-md border bg-background px-3 py-2 text-sm">
+                            <option value="a">Nutriscore A</option>
+                            <option value="b">Nutriscore B</option>
+                            <option value="c">Nutriscore C</option>
+                            <option value="d">Nutriscore D</option>
+                            <option value="e">Nutriscore E</option>
+                        </select>
+                        <p class="mt-2 text-xs text-muted-foreground">Sélectionne un seul nutriscore pour restreindre les données.</p>
+                    </div>
+
+                    <div class="flex items-center justify-end gap-3">
+                        <a href="{{ path('app_dashboard') }}" class="inline-flex items-center rounded-md bg-muted px-4 py-2 text-sm font-medium hover:bg-muted/80">Annuler</a>
+                        <button type="submit" class="inline-flex items-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-95">Créer le widget</button>
+                    </div>
+                </form>
+            </div>
+        </twig:Card>
+    </div>
+</div>
+{% endblock %}
