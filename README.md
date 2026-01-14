@@ -77,3 +77,6 @@ L'application expose quelques endpoints API utilisés principalement par le fron
     *   Permet de sauvegarder le nouvel ordre des widgets après un Drag & Drop.
     *   Payload : `{ "order": [id1, id2, id3...] }`
 
+## Mails
+
+* Rendez-vous sur `localhost:8025` afin d'accéder aux mails envoyés.
